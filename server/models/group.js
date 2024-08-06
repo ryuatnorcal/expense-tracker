@@ -7,3 +7,6 @@ const groupSchema = new mongoose.Schema({
     ref: 'Expense'
   }]
 });
+
+
+export default mongoose.model('Group', groupSchema)
