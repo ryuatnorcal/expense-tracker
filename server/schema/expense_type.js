@@ -1,7 +1,5 @@
-const mongoose = require('mongoose');
 const graphql = require('graphql');
 const { GraphQLObjectType, GraphQLInt, GraphQLID, GraphQLString } = graphql;
-
 
 const ExpenseType = new GraphQLObjectType({
   name: 'ExpenseType',
