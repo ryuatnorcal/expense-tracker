@@ -1,8 +1,11 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import {createRoot} from 'react-dom/client';
 import {
-  Router, Route
-} from 'react-router';
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link
+} from "react-router-dom";
 import { ApolloClient, InMemoryCache, ApolloProvider, gql } from '@apollo/client';
 import { createGraphiQLFetcher } from '@graphiql/toolkit';
 import { GraphiQL } from 'graphiql';
@@ -22,10 +25,23 @@ const fetcher = createGraphiQLFetcher({
 const Root = () => {
   return (
     <ApolloProvider client={client}>
-      <App />
-      {process.env.REACT_APP_ENV !== 'production' && (<GraphiQL editorTheme="solarized dark" fetcher={fetcher} />)}
+      <Router>
+        <Switch>
+          
+          <Route path="/graphiql">
+            {process.env.REACT_APP_ENV !== 'production' && (<GraphiQL editorTheme="solarized dark" fetcher={fetcher} />)} 
+          </Route>
+          <Route path="/group/:groupId">
+            <App />
+          </Route>
+          <Route path="/">
+            <App />
+          </Route>
+        </Switch>
+      </Router>
     </ApolloProvider>
   );
 };
+const root = createRoot(document.getElementById('root'));
 
-ReactDOM.render(<Root />, document.getElementById('root'));
+root.render(<Root />);

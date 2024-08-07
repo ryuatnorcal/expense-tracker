@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Expense = require('./expense');
 
 const groupSchema = new mongoose.Schema({
   name: String,
