@@ -3,11 +3,12 @@ const models = require('./models');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const session = require('express-session');
+const cors = require('cors')
 const expressGraphQL = require('express-graphql').graphqlHTTP;
 const schema = require('./schema');
 require('dotenv').config();
 const app = express();
-
+app.use(cors())
 if (!process.env.MONGO_URL) {
   throw new Error('Please define the MONGO_URL environment variable inside .env');
 }

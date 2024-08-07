@@ -1,0 +1,40 @@
+{
+  "name": "client",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start:client": "react-scripts start "
+  },
+  "dependencies": {
+    "@apollo/client": "^3.11.3",
+    "@graphiql/toolkit": "^0.9.2",
+    "crypto": "^1.0.1",
+    "dotenv": "^16.4.5",
+    "fs": "^0.0.1-security",
+    "graphiql": "^3.4.0",
+    "os": "^0.1.2",
+    "path": "^0.12.7",
+    "react": "^18.3.1",
+    "react-apollo": "^3.1.5",
+    "react-dom": "^18.3.1",
+    "react-router": "^6.26.0",
+    "react-scripts": "^5.0.1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
