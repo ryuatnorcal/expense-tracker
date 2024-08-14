@@ -39,7 +39,8 @@ const mutation = new GraphQLObjectType({
         id: { type: new GraphQLNonNull(GraphQLID) }
       },
       resolve(parentValue, { id }) {
-        return Expense.remove({ _id: id });
+        console.log('delete expense', id)
+        return Expense.deleteOne({_id: id});
       }
     },
     deleteGroup: {
@@ -48,7 +49,7 @@ const mutation = new GraphQLObjectType({
         id: { type: new GraphQLNonNull(GraphQLID) }
       },
       resolve(parentValue, { id }) {
-        return Group.remove({ _id: id });
+        return Group.deleteOne({_id: id});
       }
     },
     editExpense: {

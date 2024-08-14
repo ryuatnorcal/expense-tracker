@@ -1,10 +1,15 @@
 import {useHistory } from "react-router-dom/cjs/react-router-dom.min";
-
-
+import { useMutation } from "@apollo/client";
+import { GetGroups } from '../querys/Groups';
+import { GET_EXPENSES } from '../querys/Expenses';
+import { DELETE_EXPENSE } from '../mutations/expense';
 const Card = ({ data }) => {
   const del = '../imgs/icons8-delete.svg'
   const edit = '../imgs/icons8-edit.svg'
   const history = useHistory();
+  const [deleteExpense, { loading: expenseLoading, error: expenseError }] = useMutation(DELETE_EXPENSE)
+  console.log('loading', expenseLoading)
+  console.log('error', expenseError)
   const renderExpenses = (expenses, groupId) => {
     const handleExpenseClick = (type, id) => {
       switch(type) {
@@ -12,6 +17,17 @@ const Card = ({ data }) => {
           history.push(`/expense/${id}/${groupId}`);
           break;
         case 'delete':
+          // try {
+            
+            deleteExpense({
+              variables: {
+                id
+              },
+              refetchQueries: [{ query: GetGroups }, { query: GET_EXPENSES }],
+            });
+          // } catch (error) {
+          //   throw Error('GQL error',error)
+          // }
           break;
       }
       

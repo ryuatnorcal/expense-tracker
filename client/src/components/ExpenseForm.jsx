@@ -2,13 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { useMutation, gql, useQuery } from '@apollo/client';
 import { useParams } from 'react-router-dom/cjs/react-router-dom.min';
 import {ADD_EXPENSE,EDIT_EXPENSE} from '../mutations/expense';
-import {GET_EXPENSE_BY_ID} from '../querys/Expenses';
+import { GET_EXPENSE_BY_ID, GET_EXPENSES } from '../querys/Expenses';
+import {GetGroups} from '../querys/Groups';
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 const ExpenseForm = ({ isAdd }) => {
   const [name, setName] = useState('');
   const [date, setDate] = useState('');
   const [tax, setTax] = useState('');
   const [amount, setAmount] = useState('');
-  
+  const history = useHistory();
   const { expenseId, groupId } = useParams();
   const { loading, error, data } = useQuery(GET_EXPENSE_BY_ID, {
     variables: {
@@ -19,11 +21,12 @@ const ExpenseForm = ({ isAdd }) => {
   
   // if (data) {
   const { expense } = data || {};
-  console.log(expense);
+ 
   useEffect(() => {
     if (expense) {
+      const d = new Date(parseInt(expense.date));
       setName(expense.name);
-      setDate(expense.date);
+      expense.date !== null && setDate(d.toISOString()?.split('T')[0]);
       setTax(expense.tax);
       setAmount(expense.amount);
     }
@@ -32,31 +35,54 @@ const ExpenseForm = ({ isAdd }) => {
 
   const [addExpense] = useMutation(ADD_EXPENSE, {
     variables: {
-      input: {
-        name,
-        date,
-        tax,
-        amount,
-        groupId
-      }
+      name,
+      date: new Date(date).getMilliseconds().toString(),
+      tax,
+      amount,
+      groupId
     }
   })
 
-  const [editExpense] = useMutation(EDIT_EXPENSE, {
-    variables: {
-      id: expenseId,
-      input: {
-        name,
-        date,
-        tax,
-        amount,
-        groupId
-      }
-    }
-  })
+  const [editExpense, { loading: expenseLoading, error: expenseError }] = useMutation(EDIT_EXPENSE)
   const handleSubmit = (e) => {
     e.preventDefault();
-    expenseId? editExpense() :addExpense();
+    try {
+      expenseId ? editExpense({
+        variables: {
+          id: expenseId,
+          name,
+          date: new Date(date).getMilliseconds().toString(),
+          tax: parseInt(tax),
+          amount: parseInt(amount),
+          category: 'other'
+        },
+        update: (cache, { data: { editExpense } }) => {
+          const { groups } = cache.readQuery({ query: GetGroups }) || {};
+          const newData = groups.map(group => {
+            return group?.expenses?.map(expense => {
+              if (expense.id === editExpense.id) {
+                return editExpense
+              } else {
+                return expense
+              }
+            }) || group
+          })
+          cache.writeQuery({
+            query: GetGroups,
+            data: { groups: newData }
+          })
+        }
+      }) : addExpense({})
+      if (!expenseLoading && !expenseError) {
+        history.push('/')
+      }
+      if (expenseError) {
+        console.log(expenseError)
+      }
+    } catch (error) {
+      console.log(error)
+    }
+    
   }
 
   if (loading) return <p>Loading ...</p>;

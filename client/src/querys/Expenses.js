@@ -12,3 +12,15 @@ export const GET_EXPENSE_BY_ID = gql`
         
     }
   }`;
+
+  export const GET_EXPENSES = gql`
+  query GetExpenses {
+    expenses {
+      id
+      name
+      amount
+      date
+      category
+      tax
+    }
+  }`;
